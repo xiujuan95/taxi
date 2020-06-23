@@ -1,0 +1,22 @@
+---
+apiVersion: build.dev/v1alpha1
+kind: Build
+metadata:
+  name: kaniko-multiple-build
+  annotations:
+    build.build.dev/build-run-deletion: "true"
+spec:
+  source:
+    url: https://github.com/xiujuan95/taxi
+  strategy:
+    name: kaniko
+    kind: ClusterBuildStrategy
+  dockerfile: Dockerfile
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+  output:
+    image: us.icr.io/zoe_namespace/go-sample-large
+    credentials:
+      name: icr-knbuild-zoe

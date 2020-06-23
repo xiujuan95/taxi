@@ -1,0 +1,13 @@
+---
+apiVersion: build.dev/v1alpha1
+kind: BuildRun
+metadata:
+  name: kaniko-multiple-buildrun
+spec:
+  buildRef:
+    name: kaniko-multiple-build
+  resources:
+    limits:
+      cpu: "1"
+  serviceAccount:
+    generate: true

@@ -1,15 +1,11 @@
-FROM golang:latest AS build
-COPY . /go/build
-WORKDIR /go/build
+FROM golang:1.11-alpine AS build
 
-# The commit for the build is logged out on startup.
-RUN GIT_COMMIT=$(git rev-list -1 HEAD) && go build -o booktaxi -ldflags "-X main.CommitSHA=$GIT_COMMIT" ./src/cmd/booktaxi
+# Install tools required for project
+# Run `docker build --no-cache .` to update dependencies
+RUN apk add --no-cache git
+RUN go get github.com/golang/dep/cmd/dep
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal
-WORKDIR /root/
-COPY --from=build /go/build/booktaxi .
-
-# This file is served by the small Go service.
-COPY --from=build /go/build/src/web/index.html /usr/share/booktaxi/
-EXPOSE 8080
-CMD ["./booktaxi"]
+FROM ubuntu
+ENTRYPOINT ["/bin/bash", "-c", "mkdir -p /tmp/demo"]
+RUN dd if=/dev/zero of=bigFile.txt bs=20M count=1000
+ENTRYPOINT ["/bin/bash", "-c", "echo end"]
